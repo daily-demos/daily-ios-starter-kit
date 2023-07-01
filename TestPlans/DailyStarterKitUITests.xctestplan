@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "E760F691-3A28-4FD3-9116-F9C3090C33AA",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:DailyStarterKit.xcodeproj",
+        "identifier" : "4972C18C2A0DAD5B00D17DA0",
+        "name" : "DailyStarterKitUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

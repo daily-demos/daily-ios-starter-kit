@@ -1,0 +1,31 @@
+{
+  "configurations" : [
+    {
+      "id" : "B80597B8-E4E0-41DA-961A-F955A140D36D",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:DailyStarterKit.xcodeproj",
+        "identifier" : "4972C1822A0DAD5B00D17DA0",
+        "name" : "DailyStarterKitTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:DailyStarterKit.xcodeproj",
+        "identifier" : "4908FA3E2A4F66B300D47BB9",
+        "name" : "DailyKitTests"
+      }
+    }
+  ],
+  "version" : 1
+}
