@@ -1,8 +1,12 @@
 @testable import DailyKit
 import XCTest
 
-final class CallParticipantsTests: XCTestCase, TestSupport {
-    func testStabilizePreservesOrderWhenEqual() throws {
+final class CallParticipantsTests: XCTestCase, TestSupport {}
+
+// MARK: - Ordering
+
+extension CallParticipantsTests {
+    func testStabilizePreservesOrderWhenOrderDoesNotChange() throws {
         let visible = [
             CallParticipant(username: "0"),
             CallParticipant(username: "1"),
@@ -104,12 +108,12 @@ final class CallParticipantsTests: XCTestCase, TestSupport {
 
         let participants = previous.stabilize(current)
 
-        XCTAssertEqual(participants.visible.mapValues(\.username), [
-            0: visible[0].username,
-            1: visible[1].username,
-            2: visible[2].username,
-            3: visible[3].username,
-            4: visible[4].username,
+        assertParticipants(participants, visibleEquals: [
+            visible[0],
+            visible[1],
+            visible[2],
+            visible[3],
+            visible[4],
         ])
     }
 
@@ -140,6 +144,121 @@ final class CallParticipantsTests: XCTestCase, TestSupport {
             visible[3],
             visible[1],
             visible[2],
+        ])
+    }
+}
+
+// MARK: - New Values
+
+extension CallParticipantsTests {
+    func testStabilizePreservesNewValuesWhenOrderDoesNotChange() throws {
+        let previous = makeCallParticipants(visible: [
+            CallParticipant(id: 0, username: "0", hasVideo: false),
+            CallParticipant(id: 1, username: "1", hasVideo: false),
+            CallParticipant(id: 2, username: "2", hasVideo: false),
+        ])
+        let current = makeCallParticipants(visible: [
+            CallParticipant(id: 0, username: "0", hasVideo: true),
+            CallParticipant(id: 1, username: "1", hasVideo: true),
+            CallParticipant(id: 2, username: "2", hasVideo: true),
+        ])
+
+        let participants = previous.stabilize(current)
+
+        assertParticipants(participants, visibleEquals: [
+            CallParticipant(id: 0, username: "0", hasVideo: true),
+            CallParticipant(id: 1, username: "1", hasVideo: true),
+            CallParticipant(id: 2, username: "2", hasVideo: true),
+        ])
+    }
+
+    func testStabilizePreservesNewValuesWhenParticipantsAreMoved() throws {
+        let previous = makeCallParticipants(visible: [
+            CallParticipant(id: 0, username: "0", hasVideo: false),
+            CallParticipant(id: 1, username: "1", hasVideo: false),
+            CallParticipant(id: 2, username: "2", hasVideo: false),
+        ])
+        let current = makeCallParticipants(visible: [
+            CallParticipant(id: 2, username: "2", hasVideo: true),
+            CallParticipant(id: 1, username: "1", hasVideo: true),
+            CallParticipant(id: 0, username: "0", hasVideo: true),
+        ])
+
+        let participants = previous.stabilize(current)
+
+        assertParticipants(participants, visibleEquals: [
+            CallParticipant(id: 0, username: "0", hasVideo: true),
+            CallParticipant(id: 1, username: "1", hasVideo: true),
+            CallParticipant(id: 2, username: "2", hasVideo: true),
+        ])
+    }
+
+    func testStabilizePreservesNewValuesWhenAddingAndRemovingParticipants() throws {
+        let previous = makeCallParticipants(visible: [
+            CallParticipant(id: 0, username: "0", hasVideo: false),
+            CallParticipant(id: 1, username: "1", hasVideo: false),
+            CallParticipant(id: 2, username: "2", hasVideo: false),
+        ])
+        let current = makeCallParticipants(visible: [
+            CallParticipant(id: 1, username: "1", hasVideo: true),
+            CallParticipant(id: 2, username: "2", hasVideo: true),
+            CallParticipant(id: 3, username: "3", hasVideo: true),
+        ])
+
+        let participants = previous.stabilize(current)
+
+        assertParticipants(participants, visibleEquals: [
+            CallParticipant(id: 3, username: "3", hasVideo: true),
+            CallParticipant(id: 1, username: "1", hasVideo: true),
+            CallParticipant(id: 2, username: "2", hasVideo: true),
+        ])
+    }
+
+    func testStabilizePreservesNewValuesWhenOthersIsBigger() throws {
+        let previous = makeCallParticipants(visible: [
+            CallParticipant(id: 0, username: "0", hasVideo: false),
+            CallParticipant(id: 1, username: "1", hasVideo: false),
+            CallParticipant(id: 2, username: "2", hasVideo: false),
+        ])
+        let current = makeCallParticipants(visible: [
+            CallParticipant(id: 3, username: "3", hasVideo: true),
+            CallParticipant(id: 4, username: "4", hasVideo: true),
+            CallParticipant(id: 0, username: "0", hasVideo: true),
+            CallParticipant(id: 1, username: "1", hasVideo: true),
+            CallParticipant(id: 2, username: "2", hasVideo: true),
+        ])
+
+        let participants = previous.stabilize(current)
+
+        assertParticipants(participants, visibleEquals: [
+            CallParticipant(id: 0, username: "0", hasVideo: true),
+            CallParticipant(id: 1, username: "1", hasVideo: true),
+            CallParticipant(id: 2, username: "2", hasVideo: true),
+            CallParticipant(id: 3, username: "3", hasVideo: true),
+            CallParticipant(id: 4, username: "4", hasVideo: true),
+        ])
+    }
+
+    func testStabilizePreservesNewValuesWhenOthersIsSmaller() throws {
+        let previous = makeCallParticipants(visible: [
+            CallParticipant(id: 0, username: "0", hasVideo: false),
+            CallParticipant(id: 1, username: "1", hasVideo: false),
+            CallParticipant(id: 2, username: "2", hasVideo: false),
+            CallParticipant(id: 3, username: "3", hasVideo: false),
+            CallParticipant(id: 4, username: "4", hasVideo: false),
+        ])
+        let current = makeCallParticipants(visible: [
+            CallParticipant(id: 1, username: "1", hasVideo: true),
+            CallParticipant(id: 2, username: "2", hasVideo: true),
+            CallParticipant(id: 3, username: "3", hasVideo: true),
+        ])
+
+        let participants = previous.stabilize(current)
+
+        assertParticipants(participants, visibleEquals: [
+            CallParticipant(id: 3, username: "3", hasVideo: true),
+            CallParticipant(id: 1, username: "1", hasVideo: true),
+            CallParticipant(id: 2, username: "2", hasVideo: true),
         ])
     }
 }

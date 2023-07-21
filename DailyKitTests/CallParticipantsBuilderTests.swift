@@ -73,16 +73,16 @@ extension CallParticipantsBuilderTests {
 // MARK: - Visible Participant Limit
 
 extension CallParticipantsBuilderTests {
-    func testJoinOrderUsesVisibleParticipantLimit() throws {
+    func testJoinOrderDoesNotUseVisibleParticipantLimit() throws {
         var builder = CallParticipants.Builder(local: .defaultLocal, limit: 1)
 
         builder.handleJoined(CallParticipant())
         builder.handleJoined(CallParticipant())
 
-        XCTAssertEqual(builder.joinOrder.count, 1)
+        XCTAssertEqual(builder.joinOrder.count, 2)
     }
 
-    func testSpeakerOrderUsesVisibleParticipantLimit() throws {
+    func testSpeakerOrderDoesNotUseVisibleParticipantLimit() throws {
         var builder = CallParticipants.Builder(local: .defaultLocal, limit: 1)
         let remotes: [CallParticipant] = .makeParticipants(count: 2)
         builder.handleJoined(remotes[0])
@@ -91,10 +91,10 @@ extension CallParticipantsBuilderTests {
         builder.activeSpeaker = remotes[0]
         builder.activeSpeaker = remotes[1]
 
-        XCTAssertEqual(builder.speakerOrder.count, 1)
+        XCTAssertEqual(builder.speakerOrder.count, 2)
     }
 
-    func testRemoteUsesVisibleParticipantLimit() throws {
+    func testVisibleUsesVisibleParticipantLimit() throws {
         var builder = CallParticipants.Builder(local: .defaultLocal, limit: 1)
         let remotes: [CallParticipant] = .makeParticipants(count: 2)
 
@@ -279,6 +279,28 @@ extension CallParticipantsBuilderTests {
         assertParticipants(participants, visibleEquals: [
             remote[2],
             remote[1],
+            remote[0],
+        ])
+    }
+
+    func testParticipantsAreOrderedByJoinRecencyWhenLimitIsExceeded() throws {
+        let remote = [
+            CallParticipant(username: "0", hasVideo: false),
+            CallParticipant(username: "1", hasVideo: false),
+        ]
+        var builder = CallParticipants.Builder(local: .defaultLocal, limit: 1)
+        builder.handleJoined(remote[0])
+        builder.handleJoined(remote[1])
+        // Only participant 1 is visible because the limit is 1.
+        assertParticipants(builder.build(), visibleEquals: [
+            remote[1],
+        ])
+
+        builder.handleLeft(remote[1])
+        let participants = builder.build()
+
+        // When participant 1 leaves, participant 0 should become visible.
+        assertParticipants(participants, visibleEquals: [
             remote[0]
         ])
     }
@@ -332,7 +354,32 @@ extension CallParticipantsBuilderTests {
         assertParticipants(participants, visibleEquals: [
             remote[2],
             remote[1],
-            remote[0]
+            remote[0],
+        ])
+    }
+
+    func testParticipantsAreOrderedBySpeakingRecencyWhenLimitIsExceeded() throws {
+        let remote = [
+            CallParticipant(username: "0", hasVideo: false),
+            CallParticipant(username: "1", hasVideo: false),
+        ]
+        var builder = CallParticipants.Builder(local: .defaultLocal, limit: 1)
+        builder.handleJoined(remote[0])
+        builder.handleJoined(remote[1])
+        builder.activeSpeaker = remote[0]
+        builder.activeSpeaker = remote[1]
+        builder.activeSpeaker = nil
+        // Only participant 1 is visible because the limit is 1.
+        assertParticipants(builder.build(), visibleEquals: [
+            remote[1],
+        ])
+
+        builder.handleLeft(remote[1])
+        let participants = builder.build()
+
+        // When participant 1 leaves, participant 0 should become visible.
+        assertParticipants(participants, visibleEquals: [
+            remote[0],
         ])
     }
 
@@ -362,7 +409,7 @@ extension CallParticipantsBuilderTests {
             2: true,
             3: false,
             4: false,
-            5: false
+            5: false,
         ])
     }
 
@@ -382,7 +429,7 @@ extension CallParticipantsBuilderTests {
 
         assertParticipants(participants, visibleEquals: [
             remote[0],
-            remote[1]
+            remote[1],
         ])
     }
 
@@ -419,7 +466,7 @@ extension CallParticipantsBuilderTests {
             remote[1],
             remote[2],
             remote[3],
-            remote[4]
+            remote[4],
         ])
     }
 }
