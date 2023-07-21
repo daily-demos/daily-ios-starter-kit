@@ -45,8 +45,10 @@ extension CallParticipants {
                 // Do not track the local participant because they are not shown in the grid.
                 if let activeSpeaker, activeSpeaker.isLocal == false {
                     speakerOrder.removeAll(where: { $0 == activeSpeaker.id })
+
+                    // We do not use the limit for speaker order to preserve the order of participants that
+                    // could become visible again after higher priority participants leave.
                     speakerOrder.append(activeSpeaker.id)
-                    speakerOrder = Array(speakerOrder.prefix(limit))
                 }
             }
         }
@@ -80,8 +82,7 @@ extension CallParticipants {
                 var withoutVideo: [CallParticipant] = []
 
                 let participants = participantIDs
-                    .map { remote[$0] }
-                    .compactMap { $0 }
+                    .compactMap { remote[$0] }
 
                 for participant in participants {
                     if participant.hasVideo {
@@ -116,8 +117,9 @@ extension CallParticipants {
         mutating func handleJoined(_ participant: CallParticipant) {
             assert(participant.isLocal == false, "Unexpected join event for the local participant.")
 
+            // We do not use the limit for join order to preserve the order of participants that could become
+            // visible again after higher priority participants leave.
             joinOrder.append(participant.id)
-            joinOrder = Array(joinOrder.prefix(limit))
 
             remote[participant.id] = participant
         }
