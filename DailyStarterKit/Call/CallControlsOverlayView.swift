@@ -168,28 +168,26 @@ struct CallControlsOverlayView: View {
 #if DEBUG
 struct CallControlsOverlayView_Previews: PreviewProvider {
     static var previews: some View {
-        let manager = FakeCallManager()
+        ContextView(callManager: FakeCallManager()) {
+            Group {
+                ZStack {
+                    Text("In a call...")
 
-        Group {
-            ZStack {
-                Text("In a call...")
+                    CallControlsOverlayView()
+                }
+                .previewDisplayName("Portrait")
+                .previewInterfaceOrientation(.portrait)
 
-                CallControlsOverlayView()
+                ZStack {
+                    Text("In a call...")
+
+                    CallControlsOverlayView()
+                }
+                .previewDisplayName("Landscape")
+                .previewInterfaceOrientation(.landscapeRight)
+                .callLayout(.landscape)
             }
-            .previewDisplayName("Portrait")
-            .previewInterfaceOrientation(.portrait)
-
-            ZStack {
-                Text("In a call...")
-
-                CallControlsOverlayView()
-            }
-            .previewDisplayName("Landscape")
-            .previewInterfaceOrientation(.landscapeRight)
-            .callLayout(.landscape)
         }
-        .environmentObject(CallControlsOverlayView.Model(manager: manager))
-        .environmentObject(CallControlsView.Model(manager: manager))
     }
 }
 #endif

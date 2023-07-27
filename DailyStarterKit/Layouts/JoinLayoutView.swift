@@ -237,19 +237,18 @@ struct JoinLayoutView: View {
 #if DEBUG
 struct JoinView_Previews: PreviewProvider {
     static var previews: some View {
-        let manager = FakeCallManager()
-        Group {
-            JoinLayoutView()
-                .previewDisplayName("iPhone Portrait")
-                .previewInterfaceOrientation(.portrait)
+        ContextView(callManager: FakeCallManager()) {
+            Group {
+                JoinLayoutView()
+                    .previewDisplayName("iPhone Portrait")
+                    .previewInterfaceOrientation(.portrait)
 
-            JoinLayoutView()
-                .previewDisplayName("iPhone Landscape")
-                .previewInterfaceOrientation(.landscapeRight)
-                .callLayout(.landscape)
+                JoinLayoutView()
+                    .previewDisplayName("iPhone Landscape")
+                    .previewInterfaceOrientation(.landscapeRight)
+                    .callLayout(.landscape)
+            }
         }
-        .environmentObject(JoinLayoutView.Model(manager: manager))
-        .environmentObject(CallControlsView.Model(manager: manager))
     }
 }
 #endif

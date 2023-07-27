@@ -148,20 +148,19 @@ struct CallControlsView: View {
 #if DEBUG
 struct CallControlsView_Previews: PreviewProvider {
     static var previews: some View {
-        Group {
-            CallControlsView(shouldShowLeaveButton: false)
-                .previewLayout(.sizeThatFits)
-                .previewDisplayName("Camera, Microphone")
+        ContextView(callManager: FakeCallManager()) {
+            Group {
+                CallControlsView(shouldShowLeaveButton: false)
+                    .previewLayout(.sizeThatFits)
+                    .previewDisplayName("Camera, Microphone")
 
-            CallControlsView(shouldShowLeaveButton: true)
-                .previewLayout(.sizeThatFits)
-                .previewDisplayName("Camera, Microphone, Leave")
+                CallControlsView(shouldShowLeaveButton: true)
+                    .previewLayout(.sizeThatFits)
+                    .previewDisplayName("Camera, Microphone, Leave")
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Colors.backgroundPrimary)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Colors.backgroundPrimary)
-        .environmentObject(CallControlsView.Model(
-            manager: FakeCallManager()
-        ))
     }
 }
 #endif

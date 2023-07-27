@@ -182,39 +182,43 @@ struct GridLayoutView: View {
 #if DEBUG
 struct GridLayoutView_Previews: PreviewProvider {
     static var previews: some View {
-        let phoneManager = FakeCallManager(visible: (0 ..< 5).map { _ in CallParticipant() })
-        ForEach([
-            "iPhone 14 Pro",
-        ], id: \.self) { deviceName in
-            GridLayoutView()
-                .previewDevice(PreviewDevice(rawValue: deviceName))
-                .previewDisplayName("\(deviceName) Portrait")
-                .previewInterfaceOrientation(.portrait)
+        ContextView(callManager: FakeCallManager(
+            visible: (0 ..< 5).map { _ in CallParticipant() })
+        ) {
+            ForEach([
+                "iPhone 14 Pro",
+            ], id: \.self) { deviceName in
+                GridLayoutView()
+                    .previewDevice(PreviewDevice(rawValue: deviceName))
+                    .previewDisplayName("\(deviceName) Portrait")
+                    .previewInterfaceOrientation(.portrait)
 
-            GridLayoutView()
-                .previewDevice(PreviewDevice(rawValue: deviceName))
-                .previewDisplayName("\(deviceName) Landscape")
-                .previewInterfaceOrientation(.landscapeRight)
-                .callLayout(.landscape)
+                GridLayoutView()
+                    .previewDevice(PreviewDevice(rawValue: deviceName))
+                    .previewDisplayName("\(deviceName) Landscape")
+                    .previewInterfaceOrientation(.landscapeRight)
+                    .callLayout(.landscape)
+            }
         }
-        .environmentObject(GridLayoutView.Model(manager: phoneManager))
 
-        let padManager = FakeCallManager(visible: (0 ..< 11).map { _ in CallParticipant() })
-        ForEach([
-            "iPad mini (6th generation)",
-        ], id: \.self) { deviceName in
-            GridLayoutView()
-                .previewDevice(PreviewDevice(rawValue: deviceName))
-                .previewDisplayName("\(deviceName) Portrait")
-                .previewInterfaceOrientation(.portrait)
+        ContextView(callManager: FakeCallManager(
+            visible: (0 ..< 11).map { _ in CallParticipant() })
+        ) {
+            ForEach([
+                "iPad mini (6th generation)",
+            ], id: \.self) { deviceName in
+                GridLayoutView()
+                    .previewDevice(PreviewDevice(rawValue: deviceName))
+                    .previewDisplayName("\(deviceName) Portrait")
+                    .previewInterfaceOrientation(.portrait)
 
-            GridLayoutView()
-                .previewDevice(PreviewDevice(rawValue: deviceName))
-                .previewDisplayName("\(deviceName) Landscape")
-                .previewInterfaceOrientation(.landscapeRight)
-                .callLayout(.landscape)
+                GridLayoutView()
+                    .previewDevice(PreviewDevice(rawValue: deviceName))
+                    .previewDisplayName("\(deviceName) Landscape")
+                    .previewInterfaceOrientation(.landscapeRight)
+                    .callLayout(.landscape)
+            }
         }
-        .environmentObject(GridLayoutView.Model(manager: padManager))
     }
 }
 #endif
