@@ -60,16 +60,9 @@ struct CallContainerView: View {
 #if DEBUG
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        let manager = FakeCallManager()
-
-        CallContainerView()
-            .environmentObject(CallContainerView.Model(manager: manager))
-            .environmentObject(CallControlsOverlayView.Model(manager: manager))
-            .environmentObject(CallControlsView.Model(manager: manager))
-            .environmentObject(CallDetailsView.Model(manager: manager))
-            .environmentObject(InCallView.Model(manager: manager))
-            .environmentObject(JoinLayoutView.Model(manager: manager))
-            .environmentObject(WaitingLayoutView.Model(callManager: manager, toastManager: ToastManager()))
+        ContextView(callManager: FakeCallManager()) {
+            CallContainerView()
+        }
     }
 }
 #endif

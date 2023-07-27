@@ -45,6 +45,7 @@
 		4972C1942A0DAD5B00D17DA0 /* DailyStarterKitUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4972C1932A0DAD5B00D17DA0 /* DailyStarterKitUITestsLaunchTests.swift */; };
 		497315342A1EB1940024A578 /* CallControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 497315332A1EB1940024A578 /* CallControlsView.swift */; };
 		49771FE52A4FA34F007B24DF /* GridGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49771FE42A4FA34F007B24DF /* GridGeometry.swift */; };
+		49AE16E42A72C7490078D50E /* ContextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AE16E32A72C7490078D50E /* ContextView.swift */; };
 		49B040502A58CD1D00612934 /* CallParticipantsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B0404F2A58CD1D00612934 /* CallParticipantsBuilder.swift */; };
 		49B040522A58DC3D00612934 /* VideoTrack+Hashable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B040512A58DC3D00612934 /* VideoTrack+Hashable.swift */; };
 		49B92B4B2A52249300F81BAB /* TestSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B92B4A2A52249300F81BAB /* TestSupport.swift */; };
@@ -144,6 +145,7 @@
 		4995FB4A2A465E850070117F /* CallParticipants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallParticipants.swift; sourceTree = "<group>"; };
 		4995FB4C2A4660F30070117F /* CallParticipantsBuilderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallParticipantsBuilderTests.swift; sourceTree = "<group>"; };
 		49A764432A1C06A5003A9668 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		49AE16E32A72C7490078D50E /* ContextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextView.swift; sourceTree = "<group>"; };
 		49B0404F2A58CD1D00612934 /* CallParticipantsBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallParticipantsBuilder.swift; sourceTree = "<group>"; };
 		49B040512A58DC3D00612934 /* VideoTrack+Hashable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VideoTrack+Hashable.swift"; sourceTree = "<group>"; };
 		49B1BD562A210025003033EB /* DailyStarterKitUITests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = DailyStarterKitUITests.xctestplan; sourceTree = "<group>"; };
@@ -331,6 +333,7 @@
 			isa = PBXGroup;
 			children = (
 				4940954E2A0DAF02006D9500 /* Colors.swift */,
+				49AE16E32A72C7490078D50E /* ContextView.swift */,
 				49C55AEF2A1BD1B700FF409F /* DailyVideoView.swift */,
 				491AA4CF2A27BE3900EEC919 /* ParticipantView.swift */,
 				4959DCA42A21699800B68712 /* PrimaryButtonStyle.swift */,
@@ -628,6 +631,7 @@
 				4940954F2A0DAF02006D9500 /* Colors.swift in Sources */,
 				49605B132A44D61600A0E3A8 /* ToastManager.swift in Sources */,
 				49605B152A44D61B00A0E3A8 /* Toast.swift in Sources */,
+				49AE16E42A72C7490078D50E /* ContextView.swift in Sources */,
 				4969A9C62A2AD72200071CA8 /* CallControlsOverlayView.swift in Sources */,
 				4969A9C82A2ADCD000071CA8 /* GridLayoutView.swift in Sources */,
 				493FDE862A1C3D2E0089A129 /* InCallView.swift in Sources */,

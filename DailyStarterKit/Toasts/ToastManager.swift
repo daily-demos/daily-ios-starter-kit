@@ -2,6 +2,9 @@ import SwiftUI
 
 /// A manager used to show toasts.
 final class ToastManager: ObservableObject {
+    /// A singleton instance for use in production code.
+    public static let live: ToastManager = .init()
+
     private enum Constants {
         /// The length of time for which to show a toast.
         static let toastVisibilityDuration: Duration = .seconds(3)

@@ -110,13 +110,12 @@ struct CallDetailsView: View {
 #if DEBUG
 struct CallDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        CallDetailsView(
-            isPresented: .constant(true)
-        )
-        .environmentObject(CallDetailsView.Model(manager: FakeCallManager(
+        ContextView(callManager: FakeCallManager(
             local: .defaultLocal,
             visible: (0 ..< 19).map { CallParticipant(hasAudio: $0.isMultiple(of: 2)) }
-        )))
+        )) {
+            CallDetailsView(isPresented: .constant(true))
+        }
     }
 }
 #endif

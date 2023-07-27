@@ -4,6 +4,9 @@ import Daily
 
 /// The live implementation of `CallManageable`.
 public final class CallManager: CallManageable {
+    /// A singleton instance for use in production code.
+    public static let live: CallManager = .init()
+
     // MARK: - State
 
     public var url: URL? { subjects.url.value }

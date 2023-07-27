@@ -106,29 +106,29 @@ struct WaitingLayoutView: View {
 #if DEBUG
 struct WaitingView_Previews: PreviewProvider {
     static var previews: some View {
-        let manager = FakeCallManager(url: URL(string: "https://example.com")!)
-        Group {
-            WaitingLayoutView()
-                .previewDisplayName("iPhone Portrait")
-                .previewInterfaceOrientation(.portrait)
+        ContextView(callManager: FakeCallManager()) {
+            Group {
+                WaitingLayoutView()
+                    .previewDisplayName("iPhone Portrait")
+                    .previewInterfaceOrientation(.portrait)
 
-            WaitingLayoutView()
-                .previewDisplayName("iPhone Landscape")
-                .previewInterfaceOrientation(.landscapeRight)
-                .callLayout(.landscape)
+                WaitingLayoutView()
+                    .previewDisplayName("iPhone Landscape")
+                    .previewInterfaceOrientation(.landscapeRight)
+                    .callLayout(.landscape)
 
-            WaitingLayoutView()
-                .previewDevice(PreviewDevice(rawValue: "iPad mini (6th generation)"))
-                .previewDisplayName("iPad Portrait")
-                .previewInterfaceOrientation(.portrait)
+                WaitingLayoutView()
+                    .previewDevice(PreviewDevice(rawValue: "iPad mini (6th generation)"))
+                    .previewDisplayName("iPad Portrait")
+                    .previewInterfaceOrientation(.portrait)
 
-            WaitingLayoutView()
-                .previewDevice(PreviewDevice(rawValue: "iPad mini (6th generation)"))
-                .previewDisplayName("iPad Landscape")
-                .previewInterfaceOrientation(.landscapeRight)
-                .callLayout(.landscape)
+                WaitingLayoutView()
+                    .previewDevice(PreviewDevice(rawValue: "iPad mini (6th generation)"))
+                    .previewDisplayName("iPad Landscape")
+                    .previewInterfaceOrientation(.landscapeRight)
+                    .callLayout(.landscape)
+            }
         }
-        .environmentObject(WaitingLayoutView.Model(callManager: manager, toastManager: ToastManager()))
     }
 }
 #endif

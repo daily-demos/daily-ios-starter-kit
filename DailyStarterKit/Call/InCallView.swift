@@ -70,18 +70,9 @@ struct InCallView: View {
 #if DEBUG
 struct InCallView_Previews: PreviewProvider {
     static var previews: some View {
-        let callManager = FakeCallManager()
-        let toastManager = ToastManager()
-
-        InCallView()
-            .environmentObject(CallControlsOverlayView.Model(manager: callManager))
-            .environmentObject(CallControlsView.Model(manager: callManager))
-            .environmentObject(CallDetailsView.Model(manager: callManager))
-            .environmentObject(GridLayoutView.Model(manager: callManager))
-            .environmentObject(InCallView.Model(manager: callManager))
-            .environmentObject(JoinLayoutView.Model(manager: callManager))
-            .environmentObject(WaitingLayoutView.Model(callManager: callManager, toastManager: toastManager))
-            .environmentObject(ToastOverlayView.Model(manager: toastManager))
+        ContextView(callManager: FakeCallManager()) {
+            InCallView()
+        }
     }
 }
 #endif
