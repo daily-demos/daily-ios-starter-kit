@@ -152,7 +152,7 @@ struct JoinLayoutView: View {
                     text: $model.meetingURLString,
                     prompt:
                         Text(verbatim: "https://meeting.daily.co/example...")
-                        .foregroundColor(Colors.textPrimary.opacity(0.9))
+                        .foregroundColor(Colors.textSecondaryPrompt)
                 )
                 .keyboardType(.URL)
                 .submitLabel(.done)
@@ -178,7 +178,7 @@ struct JoinLayoutView: View {
                     text: $model.username,
                     prompt:
                         Text(verbatim: "Jane Smith...")
-                        .foregroundColor(Colors.textPrimary.opacity(0.9))
+                        .foregroundColor(Colors.textSecondaryPrompt)
 
                 )
                 .disableAutocorrection(true)

@@ -14,6 +14,8 @@ struct Colors {
 
     static let textPrimaryPrompt = Color.white.opacity(0.4)
 
+    static let textSecondaryPrompt = textPrimaryPrompt.opacity(0.5)
+
     // rgba(27, 235, 185, 1)
     static let accent = Color(red: 27 / 255, green: 235 / 255, blue: 185 / 255)
 }
@@ -27,6 +29,7 @@ struct Colors_Previews: PreviewProvider {
             Colors.borderSecondary
             Colors.textPrimary
             Colors.textPrimaryPrompt
+            Colors.textSecondaryPrompt
             Colors.accent
         }
         .background(.gray)
