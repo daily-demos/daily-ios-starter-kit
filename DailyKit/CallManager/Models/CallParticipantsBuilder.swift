@@ -156,3 +156,13 @@ extension CallParticipants {
         }
     }
 }
+
+extension CallParticipants.Builder {
+    @MainActor
+    /// Makes a builder for the specified call client.
+    ///
+    /// - Parameter callClient: the call client for which to make a builder.
+    init(_ callClient: CallClient) {
+        self.init(local: callClient.participants.local.asCallParticipant)
+    }
+}
