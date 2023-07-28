@@ -34,9 +34,7 @@ public final class CallManager: CallManageable {
     /// - Parameter callClient: the Daily `CallClient` instance to use for this manager.
     required init(callClient: CallClient) {
         self.callClient = callClient
-        self.participantsBuilder = CallParticipants.Builder(
-            local: callClient.participants.local.asCallParticipant
-        )
+        self.participantsBuilder = CallParticipants.Builder(callClient)
         self.subjects = CallClientSubjects(
             url: callClient.url,
             callState: callClient.callState,
@@ -125,6 +123,9 @@ extension CallManager: CallClientDelegate {
         // Reapply the defaults after leaving a call.
         if case CallState.left = state {
             applyDefaults()
+
+            // Recreate the builder to remove any stale participant state.
+            participantsBuilder = CallParticipants.Builder(callClient)
         }
     }
 
