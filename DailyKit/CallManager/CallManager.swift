@@ -1,6 +1,7 @@
-import Foundation
 import Combine
 import Daily
+import Foundation
+import UIKit
 
 /// The live implementation of `CallManageable`.
 public final class CallManager: CallManageable {
@@ -23,6 +24,7 @@ public final class CallManager: CallManageable {
     private let callClient: CallClient
     private let subjects: CallClientSubjects
     private var participantsBuilder: CallParticipants.Builder
+    private let notificationCenter: NotificationCenter = .default
 
     /// A convenience initializer that creates a default Daily `CallClient`.
     public convenience init() {
@@ -47,6 +49,9 @@ public final class CallManager: CallManageable {
 
         // Apply the defaults to be used before joining a call.
         applyDefaults()
+
+        // Set up observers to manage video publishing when entering the background.
+        setupNotificationObservers()
     }
 
     private func applyDefaults() {
@@ -62,6 +67,40 @@ public final class CallManager: CallManageable {
             .camera: true,
             .microphone: true
         ])
+    }
+
+    // MARK: - Publishing Management
+
+    private func setupNotificationObservers() {
+        notificationCenter.addObserver(
+            self,
+            selector: #selector(didEnterBackground),
+            name: UIApplication.didEnterBackgroundNotification,
+            object: nil
+        )
+
+        notificationCenter.addObserver(
+            self,
+            selector: #selector(didBecomeActive),
+            name: UIApplication.didBecomeActiveNotification,
+            object: nil
+        )
+    }
+
+    @objc private func didEnterBackground() {
+        // Disable video publishing in the background because we do not have
+        // `isMultitaskingCameraAccessEnabled` enabled.
+        // https://developer.apple.com/documentation/avfoundation/avcapturesession/4013227-ismultitaskingcameraaccessenable
+        if callClient.publishing.camera.isPublishing {
+            callClient.setIsPublishing(.camera, false)
+        }
+    }
+
+    @objc private func didBecomeActive() {
+        // Reenable publishing when returning to the foreground.
+        if callClient.publishing.camera.isPublishing == false {
+            callClient.setIsPublishing(.camera, true)
+        }
     }
 
     // MARK: - Actions
