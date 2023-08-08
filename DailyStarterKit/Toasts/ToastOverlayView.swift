@@ -4,29 +4,29 @@ import SwiftUI
 import UniformTypeIdentifiers
 import UIKit
 
-struct ToastOverlayView: View {
-    // MARK: - Model
+// MARK: - Model
 
-    final class Model: ObservableObject {
-        // MARK: - Initialization
+final class ToastOverlayModel: ObservableObject {
+    // MARK: - Initialization
 
-        private let manager: ToastManager
+    private let manager: ToastManager
 
-        init(manager: ToastManager) {
-            self.manager = manager
+    init(manager: ToastManager) {
+        self.manager = manager
 
-            manager.$toast
-                .assign(to: &$toast)
-        }
-
-        // MARK: - Properties
-
-        @Published private(set) var toast: Toast?
+        manager.$toast
+            .assign(to: &$toast)
     }
 
-    // MARK: - View
+    // MARK: - Properties
 
-    @EnvironmentObject private var model: Model
+    @Published private(set) var toast: Toast?
+}
+
+// MARK: - View
+
+struct ToastOverlayView: View {
+    @EnvironmentObject private var model: ToastOverlayModel
 
     // The iOS 17 default animation.
     private let animation = Animation.spring(response: 0.55, dampingFraction: 1, blendDuration: 0)
@@ -95,7 +95,7 @@ struct ToastOverlayView_Previews: PreviewProvider {
                 .previewDisplayName("iPad Landscape")
                 .previewInterfaceOrientation(.landscapeRight)
         }
-        .environmentObject(ToastOverlayView.Model(manager: manager))
+        .environmentObject(ToastOverlayModel(manager: manager))
     }
 }
 #endif

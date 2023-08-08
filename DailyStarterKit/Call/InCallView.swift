@@ -1,42 +1,42 @@
 import DailyKit
 import SwiftUI
 
-struct InCallView: View {
-    // MARK: - Model
+// MARK: - Model
 
-    @MainActor
-    final class Model: ObservableObject {
-        // MARK: - Initialization
+@MainActor
+final class InCallModel: ObservableObject {
+    // MARK: - Initialization
 
-        private let manager: CallManageable
+    private let manager: CallManageable
 
-        init(manager: CallManageable) {
-            self.manager = manager
+    init(manager: CallManageable) {
+        self.manager = manager
 
-            manager.publisher(for: .participants)
-                .map(\.count)
-                .assign(to: &$participantsCount)
-        }
-
-        // MARK: - Properties
-
-        // The current participants count from `CallParticipants`.
-        @Published private(set) var participantsCount: Int = 0
-
-        // Visibility of the call controls based on user interaction.
-        @Published private(set) var callControlsOpacity: CGFloat = 1
-
-        // MARK: - Actions
-
-        func backgroundTapped() {
-            // Toggle the call controls whenever the background is tapped.
-            callControlsOpacity = callControlsOpacity.isZero ? 1 : 0
-        }
+        manager.publisher(for: .participants)
+            .map(\.count)
+            .assign(to: &$participantsCount)
     }
 
-    // MARK: - View
+    // MARK: - Properties
 
-    @EnvironmentObject private var model: Model
+    // The current participants count from `CallParticipants`.
+    @Published private(set) var participantsCount: Int = 0
+
+    // Visibility of the call controls based on user interaction.
+    @Published private(set) var callControlsOpacity: CGFloat = 1
+
+    // MARK: - Actions
+
+    func backgroundTapped() {
+        // Toggle the call controls whenever the background is tapped.
+        callControlsOpacity = callControlsOpacity.isZero ? 1 : 0
+    }
+}
+
+// MARK: - View
+
+struct InCallView: View {
+    @EnvironmentObject private var model: InCallModel
 
     var body: some View {
         Group {
