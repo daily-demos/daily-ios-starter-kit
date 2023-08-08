@@ -3,48 +3,50 @@ import Combine
 import DailyKit
 import SwiftUI
 
-struct CallControlsOverlayView: View {
-    // MARK: - Model
+// MARK: - Model
 
-    @MainActor
-    final class Model: ObservableObject {
-        // MARK: - Initialization
+@MainActor
+final class CallControlsOverlayModel: ObservableObject {
+    // MARK: - Initialization
 
-        private let manager: CallManageable
-        private var camera: CallCamera
-        private var subscriptions: Set<AnyCancellable> = []
+    private let manager: CallManageable
+    private var camera: CallCamera
+    private var subscriptions: Set<AnyCancellable> = []
 
-        init(manager: CallManageable) {
-            self.manager = manager
-            self.camera = manager.camera
+    init(manager: CallManageable) {
+        self.manager = manager
+        self.camera = manager.camera
 
-            manager.publisher(for: .camera)
-                .sink { [weak self] camera in
-                    guard let self else { return }
+        manager.publisher(for: .camera)
+            .sink { [weak self] camera in
+                guard let self else { return }
 
-                    // We assign the `camera` value directly instead of using `assign(to:)` because the view
-                    // does not need to be updated when the value changes.
-                    self.camera = camera
-                }
-                .store(in: &subscriptions)
-        }
-
-        // MARK: - Properties
-
-        @Published var isCallDetailsViewPresented: Bool = false
-
-        // MARK: - Actions
-
-        func cameraButtonTapped() {
-            manager.flipCamera(camera)
-        }
-
-        func moreButtonTapped() {
-            isCallDetailsViewPresented = true
-        }
+                // We assign the `camera` value directly instead of using `assign(to:)` because the view
+                // does not need to be updated when the value changes.
+                self.camera = camera
+            }
+            .store(in: &subscriptions)
     }
 
-    // MARK: - RoutePickerButton
+    // MARK: - Properties
+
+    @Published var isCallDetailsViewPresented: Bool = false
+
+    // MARK: - Actions
+
+    func cameraButtonTapped() {
+        manager.flipCamera(camera)
+    }
+
+    func moreButtonTapped() {
+        isCallDetailsViewPresented = true
+    }
+}
+
+// MARK: - View
+
+struct CallControlsOverlayView: View {
+    // MARK: -
 
     private struct RoutePickerButton<Content: View>: View {
         /// The custom label to be shown over the route picker button.
@@ -59,7 +61,7 @@ struct CallControlsOverlayView: View {
         }
     }
 
-    // MARK: - RoutePickerView
+    // MARK: -
 
     private struct RoutePickerView: UIViewRepresentable {
         func makeUIView(context: Context) -> UIView {
@@ -73,10 +75,10 @@ struct CallControlsOverlayView: View {
 
         func updateUIView(_ uiView: UIView, context: Context) {}
     }
+    
+    // MARK: -
 
-    // MARK: - View
-
-    @EnvironmentObject private var model: Model
+    @EnvironmentObject private var model: CallControlsOverlayModel
 
     @Environment(\.callLayout) private var layout: CallLayout
 

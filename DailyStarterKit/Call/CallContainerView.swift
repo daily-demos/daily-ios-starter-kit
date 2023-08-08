@@ -2,39 +2,39 @@ import Combine
 import DailyKit
 import SwiftUI
 
-struct CallContainerView: View {
-    // MARK: - Model
+// MARK: - Model
 
-    @MainActor
-    final class Model: ObservableObject {
-        // MARK: - Initialization
+@MainActor
+final class CallContainerModel: ObservableObject {
+    // MARK: - Initialization
 
-        private let manager: CallManageable
-        private var subscriptions: Set<AnyCancellable> = []
+    private let manager: CallManageable
+    private var subscriptions: Set<AnyCancellable> = []
 
-        init(manager: CallManageable) {
-            self.manager = manager
+    init(manager: CallManageable) {
+        self.manager = manager
 
-            manager.publisher(for: .callState)
-                .map { [.joining, .joined].contains($0) }
-                .assign(to: &$isInCall)
+        manager.publisher(for: .callState)
+            .map { [.joining, .joined].contains($0) }
+            .assign(to: &$isInCall)
 
-            $isInCall.sink { isJoined in
-                // Disable the idle timer to keep the screen awake while in a call.
-                UIApplication.shared.isIdleTimerDisabled = isJoined
-            }
-            .store(in: &subscriptions)
+        $isInCall.sink { isJoined in
+            // Disable the idle timer to keep the screen awake while in a call.
+            UIApplication.shared.isIdleTimerDisabled = isJoined
         }
-
-        // MARK: - Properties
-
-        // Whether the call is in the `joining` or `joined` call state.
-        @Published private(set) var isInCall: Bool = false
+        .store(in: &subscriptions)
     }
 
-    // MARK: - View
+    // MARK: - Properties
 
-    @EnvironmentObject private var model: Model
+    // Whether the call is in the `joining` or `joined` call state.
+    @Published private(set) var isInCall: Bool = false
+}
+
+// MARK: - View
+
+struct CallContainerView: View {
+    @EnvironmentObject private var model: CallContainerModel
 
     var body: some View {
         GeometryReader { geometry in

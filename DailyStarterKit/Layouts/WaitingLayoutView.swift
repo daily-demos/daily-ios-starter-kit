@@ -3,56 +3,56 @@ import DailyKit
 import SwiftUI
 import UniformTypeIdentifiers
 
-struct WaitingLayoutView: View {
-    // MARK: - Model
+// MARK: - Model
 
-    @MainActor
-    final class Model: ObservableObject {
-        // MARK: - Initialization
+@MainActor
+final class WaitingLayoutModel: ObservableObject {
+    // MARK: - Initialization
 
-        private let callManager: CallManageable
-        private let toastManager: ToastManager
-        private var url: URL? = nil
-        private var subscriptions: Set<AnyCancellable> = []
+    private let callManager: CallManageable
+    private let toastManager: ToastManager
+    private var url: URL? = nil
+    private var subscriptions: Set<AnyCancellable> = []
 
-        init(callManager: CallManageable, toastManager: ToastManager) {
-            self.callManager = callManager
-            self.toastManager = toastManager
-            self.url = callManager.url
-            self.localParticipant = callManager.participants.local
+    init(callManager: CallManageable, toastManager: ToastManager) {
+        self.callManager = callManager
+        self.toastManager = toastManager
+        self.url = callManager.url
+        self.localParticipant = callManager.participants.local
 
-            callManager.publisher(for: .participants)
-                .map(\.local)
-                .assign(to: &$localParticipant)
+        callManager.publisher(for: .participants)
+            .map(\.local)
+            .assign(to: &$localParticipant)
 
-            callManager.publisher(for: .url)
-                .sink { [weak self] url in
-                    guard let self else { return }
+        callManager.publisher(for: .url)
+            .sink { [weak self] url in
+                guard let self else { return }
 
-                    self.url = url
-                }
-                .store(in: &subscriptions)
-        }
-
-        // MARK: - Properties
-
-        @Published private(set) var localParticipant: CallParticipant
-        @Published private(set) var toastOpacity: CGFloat = 0
-
-        // MARK: - Actions
-
-        func copyLinkButtonTapped() {
-            guard let url = self.url else { return }
-
-            UIPasteboard.general.setValue(url, forPasteboardType: UTType.url.identifier)
-
-            toastManager.showToast(Toast(imageName: "link", message: "Link copied to clipboard!"))
-        }
+                self.url = url
+            }
+            .store(in: &subscriptions)
     }
 
-    // MARK: - View
+    // MARK: - Properties
 
-    @EnvironmentObject private var model: Model
+    @Published private(set) var localParticipant: CallParticipant
+    @Published private(set) var toastOpacity: CGFloat = 0
+
+    // MARK: - Actions
+
+    func copyLinkButtonTapped() {
+        guard let url = self.url else { return }
+
+        UIPasteboard.general.setValue(url, forPasteboardType: UTType.url.identifier)
+
+        toastManager.showToast(Toast(imageName: "link", message: "Link copied to clipboard!"))
+    }
+}
+
+// MARK: - View
+
+struct WaitingLayoutView: View {
+    @EnvironmentObject private var model: WaitingLayoutModel
 
     @Environment(\.callLayout) private var layout: CallLayout
 

@@ -2,56 +2,56 @@ import Combine
 import DailyKit
 import SwiftUI
 
-struct GridLayoutView: View {
-    // MARK: - Model
+// MARK: - Model
 
-    @MainActor
-    final class Model: ObservableObject {
-        // MARK: - Initialization
+@MainActor
+final class GridLayoutModel: ObservableObject {
+    // MARK: - Initialization
 
-        private let manager: CallManageable
-        private var subscriptions: Set<AnyCancellable> = []
+    private let manager: CallManageable
+    private var subscriptions: Set<AnyCancellable> = []
 
-        init(manager: CallManageable) {
-            self.manager = manager
-            self.participants = manager.participants
-            self.localParticipant = manager.participants.local
-            self.visibleParticipants = manager.participants.visible
+    init(manager: CallManageable) {
+        self.manager = manager
+        self.participants = manager.participants
+        self.localParticipant = manager.participants.local
+        self.visibleParticipants = manager.participants.visible
 
-            manager.publisher(for: .participants)
-                .sink { [weak self] participants in
-                    guard let self else { return }
+        manager.publisher(for: .participants)
+            .sink { [weak self] participants in
+                guard let self else { return }
 
-                    // We call `stabilize` before setting the new value to preserve the existing position of
-                    // participants that were already visible in the layout.
-                    self.participants = self.participants.stabilize(participants)
-                }
-                .store(in: &subscriptions)
-        }
-
-        // We store the call participants here, so we can call `stabilize` on the old value when it changes.
-        private var participants: CallParticipants {
-            didSet {
-                self.localParticipant = participants.local
-                self.visibleParticipants = participants.visible
+                // We call `stabilize` before setting the new value to preserve the existing position of
+                // participants that were already visible in the layout.
+                self.participants = self.participants.stabilize(participants)
             }
-        }
+            .store(in: &subscriptions)
+    }
 
-        // MARK: - Properties
-
-        @Published private(set) var localParticipant: CallParticipant
-        @Published private(set) var visibleParticipants: [Int: CallParticipant]
-
-        // MARK: - Actions
-
-        func gridSize(for layout: CallLayout) -> GridGeometry {
-            GridGeometry(layout: layout, participantsCount: visibleParticipants.count)
+    // We store the call participants here, so we can call `stabilize` on the old value when it changes.
+    private var participants: CallParticipants {
+        didSet {
+            self.localParticipant = participants.local
+            self.visibleParticipants = participants.visible
         }
     }
 
-    // MARK: - View
+    // MARK: - Properties
 
-    @EnvironmentObject private var model: Model
+    @Published private(set) var localParticipant: CallParticipant
+    @Published private(set) var visibleParticipants: [Int: CallParticipant]
+
+    // MARK: - Actions
+
+    func gridSize(for layout: CallLayout) -> GridGeometry {
+        GridGeometry(layout: layout, participantsCount: visibleParticipants.count)
+    }
+}
+
+// MARK: - View
+
+struct GridLayoutView: View {
+    @EnvironmentObject private var model: GridLayoutModel
 
     @Environment(\.callLayout) private var layout: CallLayout
 

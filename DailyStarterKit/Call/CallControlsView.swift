@@ -2,74 +2,73 @@ import AVFoundation
 import DailyKit
 import SwiftUI
 
-struct CallControlsView: View {
-    // MARK: - Model
+// MARK: - Model
 
-    @MainActor
-    final class Model: ObservableObject {
-        // MARK: - Initialization
+@MainActor
+final class CallControlsModel: ObservableObject {
+    // MARK: - Initialization
 
-        private let manager: CallManageable
+    private let manager: CallManageable
 
-        init(manager: CallManageable) {
-            self.manager = manager
-            self.camera = manager.camera
-            self.microphone = manager.microphone
+    init(manager: CallManageable) {
+        self.manager = manager
+        self.camera = manager.camera
+        self.microphone = manager.microphone
 
-            manager.publisher(for: .camera)
-                .assign(to: &$camera)
+        manager.publisher(for: .camera)
+            .assign(to: &$camera)
 
-            manager.publisher(for: .microphone)
-                .assign(to: &$microphone)
-        }
-
-        // MARK: - Properties
-
-        @Published private(set) var camera: CallCamera
-        @Published private(set) var microphone: CallMicrophone
-
-        // MARK: - Actions
-
-        func cameraButtonTapped() {
-            guard isAuthorized(for: .video) else {
-                openSettings()
-                return
-            }
-
-            manager.toggleCamera(camera)
-        }
-
-        // Whether the specified media type is either authorized or not yet determined.
-        private func isAuthorized(for mediaType: AVMediaType) -> Bool {
-            [.notDetermined, .authorized].contains(AVCaptureDevice.authorizationStatus(for: mediaType))
-        }
-
-        // Open `Settings.app` to the settings screen for this app that contains the camera and microphone
-        // authorization toggles.
-        private func openSettings() {
-            guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
-
-            UIApplication.shared.open(url)
-        }
-
-        func microphoneButtonTapped() {
-            guard isAuthorized(for: .audio) else {
-                openSettings()
-                return
-            }
-
-            manager.toggleMicrophone(microphone)
-        }
-
-        func leaveButtonTapped() {
-            manager.leave()
-        }
+        manager.publisher(for: .microphone)
+            .assign(to: &$microphone)
     }
 
-    // MARK: - View
+    // MARK: - Properties
 
-    @EnvironmentObject private var model: Model
-    let shouldShowLeaveButton: Bool
+    @Published private(set) var camera: CallCamera
+    @Published private(set) var microphone: CallMicrophone
+
+    // MARK: - Actions
+
+    func cameraButtonTapped() {
+        guard isAuthorized(for: .video) else {
+            openSettings()
+            return
+        }
+
+        manager.toggleCamera(camera)
+    }
+
+    // Whether the specified media type is either authorized or not yet determined.
+    private func isAuthorized(for mediaType: AVMediaType) -> Bool {
+        [.notDetermined, .authorized].contains(AVCaptureDevice.authorizationStatus(for: mediaType))
+    }
+
+    // Open `Settings.app` to the settings screen for this app that contains the camera and microphone
+    // authorization toggles.
+    private func openSettings() {
+        guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+
+        UIApplication.shared.open(url)
+    }
+
+    func microphoneButtonTapped() {
+        guard isAuthorized(for: .audio) else {
+            openSettings()
+            return
+        }
+
+        manager.toggleMicrophone(microphone)
+    }
+
+    func leaveButtonTapped() {
+        manager.leave()
+    }
+}
+
+// MARK: - View
+
+struct CallControlsView: View {
+    // MARK: -
 
     private struct CallControlButtonStyle: ButtonStyle {
         private enum Constants {
@@ -110,6 +109,11 @@ struct CallControlsView: View {
                 .clipShape(Circle())
         }
     }
+
+    // MARK: -
+
+    @EnvironmentObject private var model: CallControlsModel
+    let shouldShowLeaveButton: Bool
 
     var body: some View {
         HStack {

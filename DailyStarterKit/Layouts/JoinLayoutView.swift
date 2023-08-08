@@ -1,76 +1,76 @@
 import DailyKit
 import SwiftUI
 
-struct JoinLayoutView: View {
-    // MARK: - Model
+// MARK: - Model
 
-    @MainActor
-    final class Model: ObservableObject {
-        // MARK: - Initialization
+@MainActor
+final class JoinLayoutModel: ObservableObject {
+    // MARK: - Initialization
 
-        private let manager: CallManageable
+    private let manager: CallManageable
 
-        init(manager: CallManageable) {
-            self.manager = manager
-            self.localParticipant = manager.participants.local
+    init(manager: CallManageable) {
+        self.manager = manager
+        self.localParticipant = manager.participants.local
 
-            // Disable the join button in the `joining` and `joined` states.
-            manager.publisher(for: .callState)
-                .map { [.joining, .joined].contains($0) }
-                .assign(to: &$isJoinButtonDisabled)
+        // Disable the join button in the `joining` and `joined` states.
+        manager.publisher(for: .callState)
+            .map { [.joining, .joined].contains($0) }
+            .assign(to: &$isJoinButtonDisabled)
 
-            manager.publisher(for: .participants)
-                .map(\.local)
-                .assign(to: &$localParticipant)
-        }
+        manager.publisher(for: .participants)
+            .map(\.local)
+            .assign(to: &$localParticipant)
+    }
 
-        // MARK: - Properties
+    // MARK: - Properties
 
-        @AppStorage("meetingURL") var meetingURLString: String = "" {
-            didSet {
-                // Remove the red error border once the user starts typing again.
-                isMeetingURLValid = true
-            }
-        }
-
-        @AppStorage("username") var username: String = ""
-        @Published private(set) var localParticipant: CallParticipant
-        @Published private(set) var isJoinButtonDisabled: Bool = false
-        @Published private(set) var isMeetingURLValid: Bool = true
-
-        // MARK: - Actions
-
-        func joinButtonTapped() {
-            guard let meetingURL = validateMeetingURL() else {
-                // Show the red error border if the URL was invalid.
-                isMeetingURLValid = false
-                return
-            }
-
-            manager.setUsername(username)
-            manager.join(url: meetingURL)
-
-            // Disable the join button immediately to prevent redundant taps.
-            isJoinButtonDisabled = true
-        }
-
-        // Validate the URL String in `meetingURLString` after prepending `https` if needed. A URL is
-        // considered valid if it is a subdomain of `daily.co` and has at least one character in the path
-        // after the root `/`.
-        private func validateMeetingURL() -> URL? {
-            let urlString = meetingURLString.hasPrefix("https://") ? meetingURLString : "https://\(meetingURLString)"
-            guard let components = URLComponents(string: urlString),
-                  components.host?.hasSuffix(".daily.co") == true,
-                  components.path.count >= 2
-            else { return nil }
-
-            return components.url
+    @AppStorage("meetingURL") var meetingURLString: String = "" {
+        didSet {
+            // Remove the red error border once the user starts typing again.
+            isMeetingURLValid = true
         }
     }
 
-    // MARK: - View
+    @AppStorage("username") var username: String = ""
+    @Published private(set) var localParticipant: CallParticipant
+    @Published private(set) var isJoinButtonDisabled: Bool = false
+    @Published private(set) var isMeetingURLValid: Bool = true
 
-    @EnvironmentObject private var model: Model
+    // MARK: - Actions
+
+    func joinButtonTapped() {
+        guard let meetingURL = validateMeetingURL() else {
+            // Show the red error border if the URL was invalid.
+            isMeetingURLValid = false
+            return
+        }
+
+        manager.setUsername(username)
+        manager.join(url: meetingURL)
+
+        // Disable the join button immediately to prevent redundant taps.
+        isJoinButtonDisabled = true
+    }
+
+    // Validate the URL String in `meetingURLString` after prepending `https` if needed. A URL is
+    // considered valid if it is a subdomain of `daily.co` and has at least one character in the path
+    // after the root `/`.
+    private func validateMeetingURL() -> URL? {
+        let urlString = meetingURLString.hasPrefix("https://") ? meetingURLString : "https://\(meetingURLString)"
+        guard let components = URLComponents(string: urlString),
+              components.host?.hasSuffix(".daily.co") == true,
+              components.path.count >= 2
+        else { return nil }
+
+        return components.url
+    }
+}
+
+// MARK: - View
+
+struct JoinLayoutView: View {
+    @EnvironmentObject private var model: JoinLayoutModel
     @Environment(\.callLayout) private var layout: CallLayout
 
     @FocusState private var inputViewFocusedField: InputViewField?

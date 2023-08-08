@@ -2,15 +2,15 @@ import DailyKit
 import SwiftUI
 
 struct ContextView<Content: View>: View {
-    @StateObject private var callContainerViewModel: CallContainerView.Model
-    @StateObject private var callControlsOverlayViewModel: CallControlsOverlayView.Model
-    @StateObject private var callControlsViewModel: CallControlsView.Model
-    @StateObject private var callDetailsViewModel: CallDetailsView.Model
-    @StateObject private var gridLayoutViewModel: GridLayoutView.Model
-    @StateObject private var inCallViewModel: InCallView.Model
-    @StateObject private var joinLayoutViewModel: JoinLayoutView.Model
-    @StateObject private var toastOverlayViewModel: ToastOverlayView.Model
-    @StateObject private var waitingLayoutViewModel: WaitingLayoutView.Model
+    @StateObject private var callContainerModel: CallContainerModel
+    @StateObject private var callControlsOverlayModel: CallControlsOverlayModel
+    @StateObject private var callControlsModel: CallControlsModel
+    @StateObject private var callDetailsModel: CallDetailsModel
+    @StateObject private var gridLayoutModel: GridLayoutModel
+    @StateObject private var inCallModel: InCallModel
+    @StateObject private var joinLayoutModel: JoinLayoutModel
+    @StateObject private var toastOverlayModel: ToastOverlayModel
+    @StateObject private var waitingLayoutModel: WaitingLayoutModel
 
     private let content: () -> Content
 
@@ -19,32 +19,32 @@ struct ContextView<Content: View>: View {
         toastManager: ToastManager = .live,
         @ViewBuilder content: @escaping () -> Content
     ) {
-        self._callContainerViewModel = StateObject(
-            wrappedValue: CallContainerView.Model(manager: callManager)
+        self._callContainerModel = StateObject(
+            wrappedValue: CallContainerModel(manager: callManager)
         )
-        self._callControlsOverlayViewModel = StateObject(
-            wrappedValue: CallControlsOverlayView.Model(manager: callManager)
+        self._callControlsOverlayModel = StateObject(
+            wrappedValue: CallControlsOverlayModel(manager: callManager)
         )
-        self._callControlsViewModel = StateObject(
-            wrappedValue: CallControlsView.Model(manager: callManager)
+        self._callControlsModel = StateObject(
+            wrappedValue: CallControlsModel(manager: callManager)
         )
-        self._callDetailsViewModel = StateObject(
-            wrappedValue: CallDetailsView.Model(manager: callManager)
+        self._callDetailsModel = StateObject(
+            wrappedValue: CallDetailsModel(manager: callManager)
         )
-        self._gridLayoutViewModel = StateObject(
-            wrappedValue: GridLayoutView.Model(manager: callManager)
+        self._gridLayoutModel = StateObject(
+            wrappedValue: GridLayoutModel(manager: callManager)
         )
-        self._inCallViewModel = StateObject(
-            wrappedValue: InCallView.Model(manager: callManager)
+        self._inCallModel = StateObject(
+            wrappedValue: InCallModel(manager: callManager)
         )
-        self._joinLayoutViewModel = StateObject(
-            wrappedValue: JoinLayoutView.Model(manager: callManager)
+        self._joinLayoutModel = StateObject(
+            wrappedValue: JoinLayoutModel(manager: callManager)
         )
-        self._toastOverlayViewModel = StateObject(
-            wrappedValue: ToastOverlayView.Model(manager: toastManager)
+        self._toastOverlayModel = StateObject(
+            wrappedValue: ToastOverlayModel(manager: toastManager)
         )
-        self._waitingLayoutViewModel = StateObject(
-            wrappedValue: WaitingLayoutView.Model(callManager: callManager, toastManager: toastManager)
+        self._waitingLayoutModel = StateObject(
+            wrappedValue: WaitingLayoutModel(callManager: callManager, toastManager: toastManager)
         )
 
         self.content = content
@@ -52,14 +52,14 @@ struct ContextView<Content: View>: View {
 
     var body: some View {
         content()
-            .environmentObject(callContainerViewModel)
-            .environmentObject(callControlsOverlayViewModel)
-            .environmentObject(callControlsViewModel)
-            .environmentObject(callDetailsViewModel)
-            .environmentObject(gridLayoutViewModel)
-            .environmentObject(inCallViewModel)
-            .environmentObject(joinLayoutViewModel)
-            .environmentObject(toastOverlayViewModel)
-            .environmentObject(waitingLayoutViewModel)
+            .environmentObject(callContainerModel)
+            .environmentObject(callControlsOverlayModel)
+            .environmentObject(callControlsModel)
+            .environmentObject(callDetailsModel)
+            .environmentObject(gridLayoutModel)
+            .environmentObject(inCallModel)
+            .environmentObject(joinLayoutModel)
+            .environmentObject(toastOverlayModel)
+            .environmentObject(waitingLayoutModel)
     }
 }
