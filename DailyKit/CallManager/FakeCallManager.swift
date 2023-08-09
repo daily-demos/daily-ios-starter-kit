@@ -57,6 +57,10 @@ public final class FakeCallManager: CallManageable {
         }
     }
 
+    public func toggleAdaptiveHEVC(_ isAdaptiveHEVCEnabled: Bool) {
+        // UI state changes before this method is called, so doing nothing here is the happy path.
+    }
+
     public func toggleMicrophone(_ microphone: CallMicrophone) {
         switch microphone.audio {
         case .muted:

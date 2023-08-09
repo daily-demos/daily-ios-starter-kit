@@ -1,3 +1,4 @@
+import Combine
 import DailyKit
 import SwiftUI
 
@@ -8,19 +9,37 @@ final class JoinLayoutModel: ObservableObject {
     // MARK: - Initialization
 
     private let manager: CallManageable
+    private var subscriptions: Set<AnyCancellable> = []
 
     init(manager: CallManageable) {
         self.manager = manager
         self.localParticipant = manager.participants.local
 
+        setupCallStateSubscription()
+        setupParticipantsSubscription()
+        setupAdaptiveHEVCSubscription()
+    }
+
+    private func setupCallStateSubscription() {
         // Disable the join button in the `joining` and `joined` states.
         manager.publisher(for: .callState)
             .map { [.joining, .joined].contains($0) }
             .assign(to: &$isJoinButtonDisabled)
+    }
 
+    private func setupParticipantsSubscription() {
         manager.publisher(for: .participants)
             .map(\.local)
             .assign(to: &$localParticipant)
+    }
+
+    private func setupAdaptiveHEVCSubscription() {
+        $isAdaptiveHEVCEnabled.sink { [weak self] isAdaptiveHEVCEnabled in
+            guard let self else { return }
+
+            self.adaptiveHEVCButtonTapped(isAdaptiveHEVCEnabled)
+        }
+        .store(in: &subscriptions)
     }
 
     // MARK: - Properties
@@ -36,6 +55,7 @@ final class JoinLayoutModel: ObservableObject {
     @Published private(set) var localParticipant: CallParticipant
     @Published private(set) var isJoinButtonDisabled: Bool = false
     @Published private(set) var isMeetingURLValid: Bool = true
+    @Published var isAdaptiveHEVCEnabled: Bool = false
 
     // MARK: - Actions
 
@@ -51,6 +71,10 @@ final class JoinLayoutModel: ObservableObject {
 
         // Disable the join button immediately to prevent redundant taps.
         isJoinButtonDisabled = true
+    }
+
+    func adaptiveHEVCButtonTapped(_ isAdaptiveHEVCEnabled: Bool) {
+        manager.toggleAdaptiveHEVC(isAdaptiveHEVCEnabled)
     }
 
     // Validate the URL String in `meetingURLString` after prepending `https` if needed. A URL is
@@ -186,8 +210,15 @@ struct JoinLayoutView: View {
                 .foregroundColor(Colors.textPrimary)
                 .focused($inputViewFocusedField, equals: .name)
             }
+
+            Toggle(isOn: $model.isAdaptiveHEVCEnabled) {
+                Text("Adaptive HEVC:")
+                    .fontWeight(.bold)
+                    .foregroundColor(Colors.textPrimaryPrompt)
+            }
+            .tint(Colors.accent)
         }
-        .padding(16)
+        .padding(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
         .background(Colors.backgroundPrimary.opacity(0.9))
         .cornerRadius(12)
         .onSubmit {
