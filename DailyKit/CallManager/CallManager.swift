@@ -117,6 +117,27 @@ public final class CallManager: CallManageable {
         }
     }
 
+    public func toggleAdaptiveHEVC(_ isAdaptiveHEVCEnabled: Bool) {
+        assert([.initialized, .left].contains(callState), "Expected to not be in a video call.")
+
+        if isAdaptiveHEVCEnabled {
+            callClient.updatePublishing(.set(
+                camera: .set(
+                    sendSettings: .set(
+                        maxQuality: .set(.high),
+                        encodings: .set(.mode(.iOSOptimized))
+                    )
+                )
+            ))
+        } else {
+            callClient.updatePublishing(.set(
+                camera: .set(
+                    sendSettings: .fromDefaults
+                )
+            ))
+        }
+    }
+
     public func toggleMicrophone(_ microphone: CallMicrophone) {
         switch microphone.audio {
         case .muted:

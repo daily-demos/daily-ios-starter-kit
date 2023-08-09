@@ -37,6 +37,11 @@ public protocol CallManageable {
     /// - Parameter camera: the current `CallCamera` value.
     func toggleCamera(_ camera: CallCamera)
 
+    /// Toggles the video encoding mode between the default and Adaptive HEVC.
+    ///
+    /// - Parameter isAdaptiveHEVCEnabled: whether Adaptive HEVC is enabled.
+    func toggleAdaptiveHEVC(_ isAdaptiveHEVCEnabled: Bool)
+
     /// Toggles the mute state of the microphone.
     ///
     /// - Parameter microphone: the current `CallMicrophone` value.
