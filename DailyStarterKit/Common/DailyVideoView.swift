@@ -11,19 +11,27 @@ struct DailyVideoView: UIViewRepresentable {
     var videoScaleMode: VideoView.VideoScaleMode
 
     private let videoView = VideoView()
+    private let isMirrored: Bool
 
     init(
         track: VideoTrack? = nil,
         videoScaleMode: VideoView.VideoScaleMode = .fill,
+        isMirrored: Bool = false,
         videoSize: Binding<CGSize> = .constant(.zero)
     ) {
         self.track = track
         self.videoScaleMode = videoScaleMode
+        self.isMirrored = isMirrored
         self._videoSize = videoSize
     }
 
     func makeUIView(context: Context) -> VideoView {
         videoView.delegate = context.coordinator
+
+        if isMirrored {
+            videoView.transform = CGAffineTransform(scaleX: -1, y: 1)
+        }
+
         return videoView
     }
 
