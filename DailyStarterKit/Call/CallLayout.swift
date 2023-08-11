@@ -19,10 +19,14 @@ enum CallLayout {
 }
 
 extension CallLayout {
-    /// Makes a `CallLayout` based on the specified window size.
+    /// Makes a `CallLayout` based on the specified geometry values.
     ///
-    /// - Parameter size: the size of the window.
-    init(_ size: CGSize) {
+    /// - Parameter geometry: the geometry values with which to calculate the window size.
+    init(_ geometry: GeometryProxy) {
+        let size = CGSize(
+            width: geometry.size.width + geometry.safeAreaInsets.leading + geometry.safeAreaInsets.trailing,
+            height: geometry.size.height + geometry.safeAreaInsets.top + geometry.safeAreaInsets.bottom
+        )
         self = size.width < size.height ? .portrait : .landscape
     }
 }

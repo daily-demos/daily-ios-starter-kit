@@ -48,7 +48,7 @@ struct CallContainerView: View {
                 }
             }
             // Set the `callLayout` based on the size of the window.
-            .callLayout(CallLayout(geometry.size))
+            .callLayout(CallLayout(geometry))
             // Prefer the dark color scheme, so text in the status bar will be readable.
             .preferredColorScheme(.dark)
         }
