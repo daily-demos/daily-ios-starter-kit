@@ -234,7 +234,8 @@ struct JoinLayoutView: View {
 
                 DailyVideoView(
                     track: model.localParticipant.videoTrack,
-                    videoScaleMode: .fit
+                    videoScaleMode: .fit,
+                    isMirrored: model.localParticipant.isVideoMirrored
                 )
 
                 VStack {

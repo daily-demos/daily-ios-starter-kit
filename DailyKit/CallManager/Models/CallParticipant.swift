@@ -24,6 +24,12 @@ public struct CallParticipant: Hashable, Identifiable {
     /// Whether this participant has video available.
     public let hasVideo: Bool
 
+    /// Whether video for this participant should be mirrored.
+    ///
+    /// Video for the local participant is mirrored when the camera facing mode is `user` but not for
+    /// `environment`. Video for remote participants is never mirrored.
+    public let isVideoMirrored: Bool
+
     /// Whether the `videoTrack` of this participant is screen share content.
     public let isSharingScreen: Bool
 
@@ -41,10 +47,12 @@ public struct CallParticipant: Hashable, Identifiable {
 }
 
 extension CallParticipant {
-    /// Makes a call participant from the specified `Participant`.
+    /// Makes a call participant for the specified `Participant`.
     ///
-    /// - Parameter participant: the `Participant` from which to make a `CallParticpant`.
-    init(_ participant: Participant) {
+    /// - Parameters:
+    ///   - participant: the `Participant` from which to make a `CallParticipant`.
+    ///   - camera: the camera settings from which to obtain the `MediaTrackFacingMode`.
+    init(_ participant: Participant, camera: CameraInputSettings) {
         // Only use the screen track if it is `playable`.
         let screenTrack = participant.media.flatMap { media in
             media.screenVideo.state == .playable ? media.screenVideo.track : nil
@@ -67,13 +75,12 @@ extension CallParticipant {
 
         self.videoTrack = videoTrack
         self.hasVideo = videoTrack != nil
+
+        // Video for the local participant is only mirrored when the camera is in user facing mode.
+        self.isVideoMirrored = participant.info.isLocal && camera.settings.facingMode == .user
+
         self.isSharingScreen = screenTrack != nil
     }
-}
-
-extension Participant {
-    /// A copy of this participant as a `CallParticipant`.
-    var asCallParticipant: CallParticipant { CallParticipant(self) }
 }
 
 #if DEBUG
@@ -89,6 +96,7 @@ extension CallParticipant {
         isLocal: Bool = false,
         hasAudio: Bool = false,
         hasVideo: Bool = true,
+        isVideoMirrored: Bool = true,
         isSharingScreen: Bool = false
     ) {
         self.id = id
@@ -97,6 +105,7 @@ extension CallParticipant {
         self.hasAudio = hasAudio
         self.videoTrack = nil
         self.hasVideo = hasVideo
+        self.isVideoMirrored = isVideoMirrored
         self.isSharingScreen = isSharingScreen
     }
 }

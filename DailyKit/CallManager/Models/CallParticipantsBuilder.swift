@@ -163,6 +163,6 @@ extension CallParticipants.Builder {
     ///
     /// - Parameter callClient: the call client for which to make a builder.
     init(_ callClient: CallClient) {
-        self.init(local: callClient.participants.local.asCallParticipant)
+        self.init(local: CallParticipant(callClient.participants.local, camera: callClient.inputs.camera))
     }
 }
