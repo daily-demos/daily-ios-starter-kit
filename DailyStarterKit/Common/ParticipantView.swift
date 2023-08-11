@@ -23,11 +23,6 @@ struct ParticipantView: View {
         participant.isLocal ? .fit : .fill
     }
 
-    private var isMirrored: Bool {
-        // Mirror video for the local participant.
-        participant.isLocal
-    }
-
     @Environment(\.callLayout) private var layout: CallLayout
 
     var body: some View {
@@ -42,7 +37,7 @@ struct ParticipantView: View {
             DailyVideoView(
                 track: participant.videoTrack,
                 videoScaleMode: participant.videoScaleMode,
-                isMirrored: isMirrored
+                isMirrored: participant.isVideoMirrored
             )
             .aspectRatio(aspectRatio, contentMode: contentMode)
             .opacity(participant.hasVideo ? 1 : 0)

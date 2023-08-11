@@ -224,24 +224,35 @@ extension CallManager: CallClientDelegate {
         _ callClient: CallClient,
         inputsUpdated inputs: InputSettings
     ) {
-        subjects.camera.send(CallCamera(inputs.camera))
-        subjects.microphone.send(CallMicrophone(inputs.microphone))
+        subjects.camera
+            .send(CallCamera(inputs.camera))
+        subjects.microphone
+            .send(CallMicrophone(inputs.microphone))
+
+        participantsBuilder
+            .handleUpdated(CallParticipant(callClient.participants.local, camera: inputs.camera))
+        subjects.participants
+            .send(participantsBuilder.build())
     }
 
     public func callClient(
         _ callClient: CallClient,
         activeSpeakerChanged activeSpeaker: Participant?
     ) {
-        participantsBuilder.activeSpeaker = activeSpeaker?.asCallParticipant
-        subjects.participants.send(participantsBuilder.build())
+        participantsBuilder.activeSpeaker = activeSpeaker
+            .flatMap { CallParticipant($0, camera: callClient.inputs.camera) }
+        subjects.participants
+            .send(participantsBuilder.build())
     }
 
     public func callClient(
         _ callClient: CallClient,
         participantJoined participant: Participant
     ) {
-        participantsBuilder.handleJoined(participant.asCallParticipant)
-        subjects.participants.send(participantsBuilder.build())
+        participantsBuilder
+            .handleJoined(CallParticipant(participant, camera: callClient.inputs.camera))
+        subjects.participants
+            .send(participantsBuilder.build())
     }
 
     public func callClient(
@@ -249,15 +260,19 @@ extension CallManager: CallClientDelegate {
         participantLeft participant: Participant,
         withReason reason: ParticipantLeftReason
     ) {
-        participantsBuilder.handleLeft(participant.asCallParticipant)
-        subjects.participants.send(participantsBuilder.build())
+        participantsBuilder
+            .handleLeft(CallParticipant(participant, camera: callClient.inputs.camera))
+        subjects.participants
+            .send(participantsBuilder.build())
     }
 
     public func callClient(
         _ callClient: CallClient,
         participantUpdated participant: Participant
     ) {
-        participantsBuilder.handleUpdated(participant.asCallParticipant)
-        subjects.participants.send(participantsBuilder.build())
+        participantsBuilder
+            .handleUpdated(CallParticipant(participant, camera: callClient.inputs.camera))
+        subjects.participants
+            .send(participantsBuilder.build())
     }
 }
