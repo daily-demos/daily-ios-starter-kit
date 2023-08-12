@@ -1,3 +1,4 @@
+import AVFoundation
 import Combine
 import Daily
 import Foundation
@@ -51,18 +52,22 @@ public final class CallManager: CallManageable {
         callClient.delegate = self
 
         // Apply the defaults to be used before joining a call.
-        applyDefaults()
+        Task { await applyDefaults() }
 
         // Set up observers to manage video publishing when entering the background.
         setupNotificationObservers()
     }
 
-    private func applyDefaults() {
+    private func applyDefaults() async {
+        // Do not enable the camera unless it's already authorized, so we can refresh the input after
+        // requesting authorization.
+        let isCameraEnabled = await isAuthorized(for: .video)
+
         // Enable the camera and disable the microphone, so users can see themselves in the join screen and
         // join without their microphone enabled. These values may be overridden by room properties after
         // joining.
         callClient.setInputsEnabled([
-            .camera: true,
+            .camera: isCameraEnabled,
             .microphone: false
         ])
 
@@ -107,6 +112,22 @@ public final class CallManager: CallManageable {
     }
 
     // MARK: - Actions
+
+    public func isAuthorized(for mediaType: AVMediaType) async -> Bool {
+        let isAuthorized = await AVCaptureDevice.requestAccess(for: mediaType)
+
+        // Update the input now that authorization has been requested.
+        switch mediaType {
+        case .audio:
+            subjects.microphone.send(CallMicrophone(callClient.inputs.microphone))
+        case .video:
+            subjects.camera.send(CallCamera(callClient.inputs.camera))
+        default:
+            fatalError("Expected either audio or video.")
+        }
+
+        return isAuthorized
+    }
 
     public func toggleCamera(_ camera: CallCamera) {
         switch camera.video {
@@ -185,7 +206,7 @@ extension CallManager: CallClientDelegate {
 
         // Reapply the defaults after leaving a call.
         if case CallState.left = state {
-            applyDefaults()
+            Task { await applyDefaults() }
 
             // Recreate the builder to remove any stale participant state.
             participantsBuilder = CallParticipants.Builder(callClient)

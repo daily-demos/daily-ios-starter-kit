@@ -1,6 +1,7 @@
-import Foundation
+import AVFoundation
 import Combine
 import Daily
+import Foundation
 
 #if DEBUG
 /// A fake implementation of `CallManageable` for previews and testing.
@@ -47,6 +48,8 @@ public final class FakeCallManager: CallManageable {
     }
 
     // MARK: - Actions
+
+    public func isAuthorized(for mediaType: AVMediaType) async -> Bool { true }
 
     public func toggleCamera(_ camera: CallCamera) {
         switch camera.video {

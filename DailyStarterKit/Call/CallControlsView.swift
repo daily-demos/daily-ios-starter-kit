@@ -29,18 +29,13 @@ final class CallControlsModel: ObservableObject {
 
     // MARK: - Actions
 
-    func cameraButtonTapped() {
-        guard isAuthorized(for: .video) else {
+    func cameraButtonTapped() async {
+        guard await manager.isAuthorized(for: .video) else {
             openSettings()
             return
         }
 
         manager.toggleCamera(camera)
-    }
-
-    // Whether the specified media type is either authorized or not yet determined.
-    private func isAuthorized(for mediaType: AVMediaType) -> Bool {
-        [.notDetermined, .authorized].contains(AVCaptureDevice.authorizationStatus(for: mediaType))
     }
 
     // Open `Settings.app` to the settings screen for this app that contains the camera and microphone
@@ -51,8 +46,8 @@ final class CallControlsModel: ObservableObject {
         UIApplication.shared.open(url)
     }
 
-    func microphoneButtonTapped() {
-        guard isAuthorized(for: .audio) else {
+    func microphoneButtonTapped() async {
+        guard await manager.isAuthorized(for: .audio) else {
             openSettings()
             return
         }
@@ -118,7 +113,7 @@ struct CallControlsView: View {
     var body: some View {
         HStack {
             Button {
-                model.cameraButtonTapped()
+                Task { await model.cameraButtonTapped() }
             } label: {
                 Image(systemName: model.camera.isMuted ? "video.slash.fill" : "video.fill")
                     .font(.system(size: 24))
@@ -126,7 +121,7 @@ struct CallControlsView: View {
             .buttonStyle(CallControlButtonStyle(isMuted: model.camera.isMuted))
 
             Button {
-                model.microphoneButtonTapped()
+                Task { await model.microphoneButtonTapped() }
             } label: {
                 Image(systemName: model.microphone.isMuted ? "mic.slash.fill" : "mic.fill")
                     .font(.system(size: 26))

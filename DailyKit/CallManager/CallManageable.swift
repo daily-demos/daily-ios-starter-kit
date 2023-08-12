@@ -1,6 +1,7 @@
-import Foundation
+import AVFoundation
 import Combine
 import Daily
+import Foundation
 
 @MainActor
 /// The source of truth for call state and interface to the Daily `CallClient`.
@@ -31,6 +32,14 @@ public protocol CallManageable {
     func publisher<T>(for property: CallClientProperty<T>) -> AnyPublisher<T, Never>
 
     // MARK: - Actions
+
+    /// Determines whether capture of the specified media type is authorized.
+    ///
+    /// The local participant will be prompted for authorization if the status is `notDetermined`.
+    ///
+    /// - Parameter mediaType: the media type for which to check the authorization status.
+    /// - Returns: whether capture of the specified media type is authorized.
+    func isAuthorized(for mediaType: AVMediaType) async -> Bool
 
     /// Toggles the mute state of the camera.
     ///
