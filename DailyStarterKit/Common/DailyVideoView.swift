@@ -27,17 +27,13 @@ struct DailyVideoView: UIViewRepresentable {
 
     func makeUIView(context: Context) -> VideoView {
         videoView.delegate = context.coordinator
-
-        if isMirrored {
-            videoView.transform = CGAffineTransform(scaleX: -1, y: 1)
-        }
-
         return videoView
     }
 
     func updateUIView(_ videoView: VideoView, context: Context) {
         videoView.track = track
         videoView.videoScaleMode = videoScaleMode
+        videoView.transform = isMirrored ? CGAffineTransform(scaleX: -1, y: 1) : .identity
 
         // Hide the view if we do not have a track.
         videoView.isHidden = track == nil
