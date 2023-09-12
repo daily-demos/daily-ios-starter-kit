@@ -69,12 +69,12 @@ public final class CallManager: CallManageable {
         callClient.setInputsEnabled([
             .camera: isCameraEnabled,
             .microphone: false
-        ])
+        ], completion: nil)
 
         callClient.setIsPublishing([
             .camera: true,
             .microphone: true
-        ])
+        ], completion: nil)
     }
 
     // MARK: - Publishing Management
@@ -100,14 +100,14 @@ public final class CallManager: CallManageable {
         // `isMultitaskingCameraAccessEnabled` enabled.
         // https://developer.apple.com/documentation/avfoundation/avcapturesession/4013227-ismultitaskingcameraaccessenable
         if callClient.publishing.camera.isPublishing {
-            callClient.setIsPublishing(.camera, false)
+            callClient.setIsPublishing(.camera, false, completion: nil)
         }
     }
 
     @objc private func didBecomeActive() {
         // Reenable publishing when returning to the foreground.
         if callClient.publishing.camera.isPublishing == false {
-            callClient.setIsPublishing(.camera, true)
+            callClient.setIsPublishing(.camera, true, completion: nil)
         }
     }
 
@@ -132,9 +132,9 @@ public final class CallManager: CallManageable {
     public func toggleCamera(_ camera: CallCamera) {
         switch camera.video {
         case .muted:
-            callClient.setInputsEnabled([.camera: true])
+            callClient.setInputsEnabled([.camera: true], completion: nil)
         case .unmuted:
-            callClient.setInputsEnabled([.camera: false])
+            callClient.setInputsEnabled([.camera: false], completion: nil)
         }
     }
 
@@ -146,43 +146,47 @@ public final class CallManager: CallManageable {
                 camera: .set(
                     sendSettings: .set(
                         maxQuality: .set(.high),
-                        encodings: .set(.mode(.iOSOptimized))
+                        encodings: .set(.mode(.adaptiveHEVC))
                     )
                 )
-            ))
+            ), completion: nil)
         } else {
             callClient.updatePublishing(.set(
                 camera: .set(
                     sendSettings: .fromDefaults
                 )
-            ))
+            ), completion: nil)
         }
     }
 
     public func toggleMicrophone(_ microphone: CallMicrophone) {
         switch microphone.audio {
         case .muted:
-            callClient.setInputsEnabled([.microphone: true])
+            callClient.setInputsEnabled([.microphone: true], completion: nil)
         case .unmuted:
-            callClient.setInputsEnabled([.microphone: false])
+            callClient.setInputsEnabled([.microphone: false], completion: nil)
         }
     }
 
     public func flipCamera(_ camera: CallCamera) {
         switch camera.mode {
         case .user:
-            callClient.updateInputs(.set(camera: .set(settings: .set(facingMode: .set(.environment)))))
+            callClient.updateInputs(.set(
+                camera: .set(settings: .set(facingMode: .set(.environment)))
+            ), completion: nil)
         case .environment:
-            callClient.updateInputs(.set(camera: .set(settings: .set(facingMode: .set(.user)))))
+            callClient.updateInputs(.set(
+                camera: .set(settings: .set(facingMode: .set(.user)))
+            ), completion: nil)
         }
     }
 
     public func setUsername(_ username: String?) {
-        callClient.set(username: username)
+        callClient.set(username: username, completion: nil)
     }
 
     public func join(url: URL) {
-        callClient.join(url: url)
+        callClient.join(url: url, completion: nil)
         subjects.url.send(url)
 
         // TODO: Remove this call or replace with a `CallManager` specific call state type.
@@ -191,7 +195,7 @@ public final class CallManager: CallManageable {
     }
 
     public func leave() {
-        callClient.leave()
+        callClient.leave(completion: nil)
     }
 }
 
