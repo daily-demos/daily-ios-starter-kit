@@ -32,6 +32,7 @@
 		49605B112A44A25700A0E3A8 /* ToastOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49605B102A44A25700A0E3A8 /* ToastOverlayView.swift */; };
 		49605B132A44D61600A0E3A8 /* ToastManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49605B122A44D61600A0E3A8 /* ToastManager.swift */; };
 		49605B152A44D61B00A0E3A8 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49605B142A44D61B00A0E3A8 /* Toast.swift */; };
+		49641E372AD9B613004B70B6 /* DailyCameraPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49641E362AD9B613004B70B6 /* DailyCameraPreviewView.swift */; };
 		4969A9C62A2AD72200071CA8 /* CallControlsOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4969A9C52A2AD72200071CA8 /* CallControlsOverlayView.swift */; };
 		4969A9C82A2ADCD000071CA8 /* GridLayoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4969A9C72A2ADCD000071CA8 /* GridLayoutView.swift */; };
 		49705A872A43583E007E5F45 /* CallLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49705A862A43583E007E5F45 /* CallLayout.swift */; };
@@ -126,6 +127,7 @@
 		49605B102A44A25700A0E3A8 /* ToastOverlayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastOverlayView.swift; sourceTree = "<group>"; };
 		49605B122A44D61600A0E3A8 /* ToastManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastManager.swift; sourceTree = "<group>"; };
 		49605B142A44D61B00A0E3A8 /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
+		49641E362AD9B613004B70B6 /* DailyCameraPreviewView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailyCameraPreviewView.swift; sourceTree = "<group>"; };
 		4969A9C52A2AD72200071CA8 /* CallControlsOverlayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallControlsOverlayView.swift; sourceTree = "<group>"; };
 		4969A9C72A2ADCD000071CA8 /* GridLayoutView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GridLayoutView.swift; sourceTree = "<group>"; };
 		49705A862A43583E007E5F45 /* CallLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallLayout.swift; sourceTree = "<group>"; };
@@ -332,6 +334,7 @@
 			children = (
 				4940954E2A0DAF02006D9500 /* Colors.swift */,
 				49AE16E32A72C7490078D50E /* ContextView.swift */,
+				49641E362AD9B613004B70B6 /* DailyCameraPreviewView.swift */,
 				49C55AEF2A1BD1B700FF409F /* DailyVideoView.swift */,
 				491AA4CF2A27BE3900EEC919 /* ParticipantView.swift */,
 				4959DCA42A21699800B68712 /* PrimaryButtonStyle.swift */,
@@ -622,6 +625,7 @@
 				494095522A0DAF13006D9500 /* JoinLayoutView.swift in Sources */,
 				4959DCA52A21699800B68712 /* PrimaryButtonStyle.swift in Sources */,
 				49C55AF02A1BD1B700FF409F /* DailyVideoView.swift in Sources */,
+				49641E372AD9B613004B70B6 /* DailyCameraPreviewView.swift in Sources */,
 				49705A872A43583E007E5F45 /* CallLayout.swift in Sources */,
 				4972C1792A0DAD5A00D17DA0 /* CallContainerView.swift in Sources */,
 				491AA4D02A27BE3900EEC919 /* ParticipantView.swift in Sources */,
