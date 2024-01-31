@@ -10,19 +10,6 @@ struct ParticipantView: View {
         self.shouldShowName = shouldShowName
     }
 
-    private var aspectRatio: CGFloat {
-        // Remote participants are shown in square tiles and can be cropped.
-        guard participant.isLocal else { return 1 }
-
-        // The local participant is shown without cropping.
-        return layout.localVideoAspectRatio
-    }
-
-    private var contentMode: ContentMode {
-        // Use `fit` for the local participant to prevent cropping.
-        participant.isLocal ? .fit : .fill
-    }
-
     @Environment(\.callLayout) private var layout: CallLayout
 
     var body: some View {
@@ -34,12 +21,20 @@ struct ParticipantView: View {
                 .foregroundColor(.white)
                 .opacity(participant.hasVideo ? 0 : 1)
 
-            DailyVideoView(
-                track: participant.videoTrack,
-                videoScaleMode: participant.videoScaleMode,
-                isMirrored: participant.isVideoMirrored
-            )
-            .aspectRatio(aspectRatio, contentMode: contentMode)
+            Group {
+                if participant.isLocal {
+                    // The local participant is shown without cropping.
+                    DailyCameraPreviewView()
+                        .aspectRatio(layout.localVideoAspectRatio, contentMode: .fit)
+                } else {
+                    // Remote participants are shown in square tiles and can be cropped.
+                    DailyVideoView(
+                        track: participant.videoTrack,
+                        videoScaleMode: participant.videoScaleMode
+                    )
+                    .aspectRatio(1, contentMode: .fill)
+                }
+            }
             .opacity(participant.hasVideo ? 1 : 0)
 
             VStack {

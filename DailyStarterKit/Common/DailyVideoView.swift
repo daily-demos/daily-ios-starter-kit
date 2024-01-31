@@ -6,51 +6,51 @@ struct DailyVideoView: UIViewRepresentable {
     /// The current size of the video being rendered by this view.
     @Binding private(set) var videoSize: CGSize
 
-    var track: VideoTrack?
-
-    var videoScaleMode: VideoView.VideoScaleMode
-
-    private let videoView = VideoView()
-    private let isMirrored: Bool
+    private let track: VideoTrack?
+    private let videoScaleMode: VideoView.VideoScaleMode
 
     init(
         track: VideoTrack? = nil,
         videoScaleMode: VideoView.VideoScaleMode = .fill,
-        isMirrored: Bool = false,
         videoSize: Binding<CGSize> = .constant(.zero)
     ) {
         self.track = track
         self.videoScaleMode = videoScaleMode
-        self.isMirrored = isMirrored
         self._videoSize = videoSize
     }
 
     func makeUIView(context: Context) -> VideoView {
+        let videoView = VideoView()
         videoView.delegate = context.coordinator
         return videoView
     }
 
     func updateUIView(_ videoView: VideoView, context: Context) {
-        videoView.track = track
-        videoView.videoScaleMode = videoScaleMode
-        videoView.transform = isMirrored ? CGAffineTransform(scaleX: -1, y: 1) : .identity
+        context.coordinator.dailyVideoView = self
 
-        // Hide the view if we do not have a track.
-        videoView.isHidden = track == nil
+        if videoView.track != track {
+            videoView.track = track
+        }
+
+        if videoView.videoScaleMode != videoScaleMode {
+            videoView.videoScaleMode = videoScaleMode
+        }
     }
 }
 
 extension DailyVideoView {
     final class Coordinator: VideoViewDelegate {
-        private let dailyVideoView: DailyVideoView
+        fileprivate var dailyVideoView: DailyVideoView
 
         init(_ dailyVideoView: DailyVideoView) {
             self.dailyVideoView = dailyVideoView
         }
 
-        func videoView(_ videoView: Daily.VideoView, didChangeVideoSize size: CGSize) {
-            // Update the `DailyVideoView.videoSize` binding with the current `size` value.
-            dailyVideoView.videoSize = size
+        func videoView(_ videoView: VideoView, didChangeVideoSize size: CGSize) {
+            // Update the `videoSize` binding with the current `size` value.
+            DispatchQueue.main.async {
+                self.dailyVideoView.videoSize = size
+            }
         }
     }
 

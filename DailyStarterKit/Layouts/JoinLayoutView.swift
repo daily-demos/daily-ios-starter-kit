@@ -232,11 +232,7 @@ struct JoinLayoutView: View {
                 Text("Setup your camera and mic")
                     .foregroundColor(Colors.textPrimary)
 
-                DailyVideoView(
-                    track: model.localParticipant.videoTrack,
-                    videoScaleMode: .fit,
-                    isMirrored: model.localParticipant.isVideoMirrored
-                )
+                DailyCameraPreviewView()
 
                 VStack {
                     Spacer()
